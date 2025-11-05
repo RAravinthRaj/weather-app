@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { AirPollutionResponse } from '@/types/weather';
-import { Cloud } from 'lucide-react';
-import { Label, Pie, PieChart, ResponsiveContainer } from 'recharts';
-import { Card } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import React from "react";
+import { AirPollutionResponse } from "@/types/weather";
+import { Cloud } from "lucide-react";
+import { Label, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Card } from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+} from "@/components/ui/chart";
 
 interface AirPollutionChartProps {
   data: AirPollutionResponse;
@@ -13,45 +17,45 @@ interface AirPollutionChartProps {
 
 const chartConfig = {
   co: {
-    label: 'CO',
-    color: 'var(--color-chart-1)',
+    label: "CO₂",
+    color: "var(--color-chart-1)",
   },
   no2: {
-    label: 'NO₂',
-    color: 'var(--color-chart-2)',
+    label: "NO₂",
+    color: "var(--color-chart-2)",
   },
   o3: {
-    label: 'O₃',
-    color: 'var(--color-chart-3)',
+    label: "O₃",
+    color: "var(--color-chart-3)",
   },
   pm25: {
-    label: 'PM2.5',
-    color: 'var(--color-chart-4)',
+    label: "PM2.5",
+    color: "var(--color-chart-4)",
   },
   pm10: {
-    label: 'PM10',
-    color: 'var(--color-chart-5)',
+    label: "PM10",
+    color: "var(--color-chart-5)",
   },
   so2: {
-    label: 'SO₂',
-    color: 'var(--color-chart-6)',
+    label: "SO₂",
+    color: "var(--color-chart-6)",
   },
 } satisfies ChartConfig;
 
 const getAQIDescription = (aqi: number) => {
   switch (aqi) {
     case 1:
-      return 'Good';
+      return "Good";
     case 2:
-      return 'Fair';
+      return "Fair";
     case 3:
-      return 'Moderate';
+      return "Moderate";
     case 4:
-      return 'Poor';
+      return "Poor";
     case 5:
-      return 'Very Poor';
+      return "Very Poor";
     default:
-      return 'Unknown';
+      return "Unknown";
   }
 };
 
@@ -60,31 +64,41 @@ const AirPollutionChart: React.FC<AirPollutionChartProps> = ({ data }) => {
   const { components } = latestData;
 
   const chartData = [
-    { name: 'co', pollutant: 'CO', value: components.co, fill: 'var(--color-chart-1)' },
     {
-      name: 'no2',
-      pollutant: 'NO₂',
+      name: "co",
+      pollutant: "CO₂",
+      value: components.co,
+      fill: "var(--color-chart-1)",
+    },
+    {
+      name: "no2",
+      pollutant: "NO₂",
       value: components.no2,
-      fill: 'var(--color-chart-2)',
+      fill: "var(--color-chart-2)",
     },
-    { name: 'o3', pollutant: 'O₃', value: components.o3, fill: 'var(--color-chart-3)' },
     {
-      name: 'pm25',
-      pollutant: 'PM2.5',
+      name: "o3",
+      pollutant: "O₃",
+      value: components.o3,
+      fill: "var(--color-chart-3)",
+    },
+    {
+      name: "pm25",
+      pollutant: "PM2.5",
       value: components.pm2_5,
-      fill: 'var(--color-chart-4)',
+      fill: "var(--color-chart-4)",
     },
     {
-      name: 'pm10',
-      pollutant: 'PM10',
+      name: "pm10",
+      pollutant: "PM10",
       value: components.pm10,
-      fill: 'var(--color-chart-5)',
+      fill: "var(--color-chart-5)",
     },
     {
-      name: 'so2',
-      pollutant: 'SO₂',
+      name: "so2",
+      pollutant: "SO₂",
       value: components.so2,
-      fill: 'var(--color-chart-6)',
+      fill: "var(--color-chart-6)",
     },
   ];
 
@@ -117,7 +131,9 @@ const AirPollutionChart: React.FC<AirPollutionChartProps> = ({ data }) => {
                               className="h-3 w-3 rounded-full"
                               style={{ backgroundColor: data.fill }}
                             />
-                            <span className="text-sm font-medium">{data.pollutant}</span>
+                            <span className="text-sm font-medium">
+                              {data.pollutant}
+                            </span>
                           </div>
                           <span className="text-sm text-muted-foreground">
                             {data.value.toFixed(2)} μg/m³
@@ -137,7 +153,7 @@ const AirPollutionChart: React.FC<AirPollutionChartProps> = ({ data }) => {
                 >
                   <Label
                     content={({ viewBox }) => {
-                      if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                         return (
                           <text
                             x={viewBox.cx}
@@ -172,7 +188,10 @@ const AirPollutionChart: React.FC<AirPollutionChartProps> = ({ data }) => {
         <div className="w-full max-w-md mx-auto">
           <div className="grid grid-cols-2 gap-3 text-sm">
             {chartData.map((item) => (
-              <div key={item.name} className="flex items-center gap-2 justify-center">
+              <div
+                key={item.name}
+                className="flex items-center gap-2 justify-center"
+              >
                 <div
                   className="h-2 w-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: item.fill }}

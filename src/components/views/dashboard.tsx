@@ -1,44 +1,48 @@
-import React, { useMemo } from 'react';
-import { WeatherData } from '@/types/weather';
-import DayDuration from '@/components/views/day-duration';
-import AirPollutionChart from '@/components/views/air-pollution';
-import TemperatureHumidityChart from '@/components/views/temp-humidity';
-import ClientMap from '@/components/views/client-map';
-import CurrentWeatherCard from '@/components/views/current-weather';
-import WindPressureCard from '@/components/views/wind-pressure';
-import HourlyForecast from '@/components/views/hourly-forecast';
-import EnhancedDailyForecast from '@/components/views/daily-forecast'; // Your enhanced component
+import React, { useMemo } from "react";
+import { WeatherData } from "@/types/weather";
+import DayDuration from "@/components/views/day-duration";
+import AirPollutionChart from "@/components/views/air-pollution";
+import TemperatureHumidityChart from "@/components/views/temp-humidity";
+import ClientMap from "@/components/views/client-map";
+import CurrentWeatherCard from "@/components/views/current-weather";
+import WindPressureCard from "@/components/views/wind-pressure";
+import HourlyForecast from "@/components/views/hourly-forecast";
+import EnhancedDailyForecast from "@/components/views/daily-forecast";
+import Recommendation from "@/components/views/recommendation";
 
 interface WeatherDashboardProps {
   weatherData: WeatherData;
-  unit: 'metric' | 'imperial';
+  unit: "metric" | "imperial";
 }
 
-const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }) => {
+const WeatherDashboard: React.FC<WeatherDashboardProps> = ({
+  weatherData,
+  unit,
+}) => {
   const { currentWeather, forecast, airPollution } = weatherData;
 
   const hourlyForecastData = useMemo(
     () =>
       forecast.list.slice(0, 4).map((item) => ({
         time: new Date(item.dt * 1000).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
+          hour: "2-digit",
+          minute: "2-digit",
         }),
         temperature: item.main.temp,
         feels_like: item.main.feels_like,
         weather: item.weather[0].main,
         description: item.weather[0].description,
-        precipitation: item.rain?.['1h']
-          ? Math.min(100, Math.round(item.rain['1h'] * 100))
-          : item.snow?.['1h']
-            ? Math.min(100, Math.round(item.snow['1h'] * 100))
+        precipitation: item.rain?.["1h"]
+          ? Math.min(100, Math.round(item.rain["1h"] * 100))
+          : item.snow?.["1h"]
+            ? Math.min(100, Math.round(item.snow["1h"] * 100))
             : 0,
         humidity: item.main.humidity,
         wind_speed: item.wind.speed,
         wind_deg: item.wind.deg,
         uv_index: item.uvi || 0, // if available
       })),
-    [forecast.list],
+    [forecast.list]
   );
 
   // Daily Forecast: Next 5 days with accurate min/max
@@ -69,7 +73,7 @@ const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }
 
       const high = item.main.temp_max;
       const low = item.main.temp_min;
-      const precipitation = (item.rain?.['3h'] || item.snow?.['3h'] || 0) * 100; // Convert to %
+      const precipitation = (item.rain?.["3h"] || item.snow?.["3h"] || 0) * 100; // Convert to %
 
       if (!daysMap.has(dayKey)) {
         daysMap.set(dayKey, {
@@ -82,13 +86,16 @@ const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }
           wind_speed: item.wind.speed,
           wind_deg: item.wind.deg,
           uv_index: item.uvi || 0,
-          sunrise: new Date(forecast.city.sunrise * 1000).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
+          sunrise: new Date(forecast.city.sunrise * 1000).toLocaleTimeString(
+            [],
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          ),
           sunset: new Date(forecast.city.sunset * 1000).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
+            hour: "2-digit",
+            minute: "2-digit",
           }),
           date,
           noonItem: hour >= 10 && hour <= 14 ? item : undefined, // Noon-ish
@@ -105,7 +112,7 @@ const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }
             Math.abs(
               (existing.noonItem?.dt
                 ? new Date(existing.noonItem.dt * 1000).getHours()
-                : 12) - 12,
+                : 12) - 12
             )
         ) {
           existing.noonItem = item;
@@ -114,11 +121,13 @@ const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }
     });
 
     return Array.from(daysMap.values())
-      .filter((day) => day.date.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0))
+      .filter(
+        (day) => day.date.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)
+      )
       .slice(0, 3)
       .map((day) => ({
-        date: day.date.toLocaleDateString('en-US', { weekday: 'short' }),
-        dayName: day.date.toLocaleDateString('en-US', { weekday: 'long' }),
+        date: day.date.toLocaleDateString("en-US", { weekday: "short" }),
+        dayName: day.date.toLocaleDateString("en-US", { weekday: "long" }),
         high: Math.round(day.high),
         low: Math.round(day.low),
         weather: day.noonItem?.weather[0].main || day.weather,
@@ -168,6 +177,10 @@ const WeatherDashboard: React.FC<WeatherDashboardProps> = ({ weatherData, unit }
           markerPosition={[currentWeather.coord.lat, currentWeather.coord.lon]}
           popupContent={`${currentWeather.name}, ${currentWeather.sys.country}`}
         />
+      </div>
+
+      <div className="mx-23 my-5">
+        <Recommendation weatherData={weatherData} unit={unit} />
       </div>
     </div>
   );
