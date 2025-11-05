@@ -6,7 +6,6 @@ import {
   Wind,
   Droplets,
   Gauge,
-  Sun,
   Eye,
   Thermometer,
   Sunrise,
@@ -75,9 +74,6 @@ const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
   const visibility = currentWeather.visibility
     ? `${(currentWeather.visibility / 1000).toFixed(1)} km`
     : "N/A";
-  const dewPoint = currentWeather.dew_point
-    ? Math.round(currentWeather.dew_point)
-    : "—";
   const rain1h = currentWeather.rain?.["1h"]
     ? `${currentWeather.rain["1h"].toFixed(1)} mm`
     : null;
@@ -243,22 +239,6 @@ const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
             />
 
             <StatItem icon={<Eye />} label="Visibility" value={visibility} />
-            <StatItem
-              icon={<Thermometer />}
-              label="Dew Point"
-              value={`${dewPoint}°`}
-            />
-            <StatItem
-              icon={<Sun />}
-              label="UV Index"
-              value={`${currentWeather.uvi || 0}`}
-            />
-            <StatItem
-              icon={<Activity className={aqiColor} />}
-              label="Air Quality"
-              value={aqiLabel}
-              className={aqiColor}
-            />
 
             <StatItem
               icon={<Sunrise className="animate-pulse" />}
